@@ -1,0 +1,37 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Update Weekly Status</title>
+		
+		<link rel="stylesheet" 
+			href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" 
+			integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" 
+			crossorigin="anonymous" />
+	</head>
+	<body>
+		
+		<div class="container">
+			<h3>Update Weekly Status</h3>
+			<hr/>
+			<form th:action="@{/updateWeeklyStatus(projectId=${projectId}, weeklyStatusId=${weeklyStatusId})}" th:object="${weeklyStatusRequest}" method="POST">
+				
+				<label>Status</label><br>
+				<input type="text" th:field="${weeklyStatusRequest.status}" class="form-control col-4 mb-4" placeholder="Enter Status" />
+				
+				<label>Highlight</label><br>
+				<input type="text" th:field="${weeklyStatusRequest.highlight}" class="form-control col-4 mb-4" placeholder="Enter Highlight" />
+				
+				<label>Risk</label><br>
+				<input type="text" th:field="${weeklyStatusRequest.risk}" class="form-control col-4 mb-4" placeholder="Enter Risk" />
+
+				<label>Weekly End Date</label><br>
+				<input type="date" th:field="${weeklyStatusRequest.weeklyEndDate}" class="form-control col-4 mb-4" placeholder="Select Weekly End Date" />
+				
+				<button type="submit" class="btn btn-primary col-2">Save</button>
+				
+			</form>
+			<hr/>
+			<a th:href="@{/displayProject(projectId=${projectId})}">Back to Project Details</a>
+		</div>
+		
+	</body>
+</html>
