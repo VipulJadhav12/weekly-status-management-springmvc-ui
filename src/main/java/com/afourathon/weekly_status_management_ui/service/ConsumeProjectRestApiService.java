@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,9 +17,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.afourathon.weekly_status_management_ui.data.entity.Project;
 
-
 @Service
 public class ConsumeProjectRestApiService {
+	
+	@Value("${project.api.url}")
+	private String projectApiUrl;
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -28,7 +31,7 @@ public class ConsumeProjectRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<List<Project>> entity = new HttpEntity<>(headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/projects/getAllBy=NONE");
+		URI uri = URI.create(projectApiUrl + "/getAllBy=NONE");
 
 		ResponseEntity<List<Project>> response = restTemplate.exchange(uri, HttpMethod.GET, entity, new ParameterizedTypeReference<List<Project>>(){});
 		
@@ -42,7 +45,7 @@ public class ConsumeProjectRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<Project> entity = new HttpEntity<>(headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/projects/getBy=ID/project/" + String.valueOf(projectId));
+		URI uri = URI.create(projectApiUrl + "/getBy=ID/project/" + String.valueOf(projectId));
 
 		ResponseEntity<Project> response = restTemplate.exchange(uri, HttpMethod.GET, entity, new ParameterizedTypeReference<Project>(){});
 		

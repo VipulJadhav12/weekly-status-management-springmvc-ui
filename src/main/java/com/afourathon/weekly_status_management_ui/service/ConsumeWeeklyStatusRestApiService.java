@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,9 @@ import com.afourathon.weekly_status_management_ui.data.payloads.response.ApiResp
 
 @Service
 public class ConsumeWeeklyStatusRestApiService {
+	
+	@Value("${weekly-status.api.url}")
+	private String weeklyStatusApiUrl;
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -29,7 +33,7 @@ public class ConsumeWeeklyStatusRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<List<WeeklyStatus>> entity = new HttpEntity<>(headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/weekly_statuses/getAllBy=NONE");
+		URI uri = URI.create(weeklyStatusApiUrl + "/getAllBy=NONE");
 
 		ResponseEntity<List<WeeklyStatus>> response = restTemplate.exchange(uri, HttpMethod.GET, entity, new ParameterizedTypeReference<List<WeeklyStatus>>(){});
 		
@@ -43,7 +47,7 @@ public class ConsumeWeeklyStatusRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<WeeklyStatus> entity = new HttpEntity<>(headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/weekly_statuses/getBy=ID/weekly_status/" + weeklyStatusId);
+		URI uri = URI.create(weeklyStatusApiUrl + "/getBy=ID/weekly_status/" + weeklyStatusId);
 
 		ResponseEntity<WeeklyStatus> response = restTemplate.exchange(uri, HttpMethod.GET, entity, new ParameterizedTypeReference<WeeklyStatus>(){});
 		
@@ -57,7 +61,7 @@ public class ConsumeWeeklyStatusRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<WeeklyStatus> entity = new HttpEntity<>(headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/weekly_statuses/getBy=PROJECT_ID/project/" + String.valueOf(projectId)
+		URI uri = URI.create(weeklyStatusApiUrl + "/getBy=PROJECT_ID/project/" + String.valueOf(projectId)
 							+ "/weekly_status/" + String.valueOf(weeklyStatusId));
 
 		ResponseEntity<WeeklyStatus> response = restTemplate.exchange(uri, HttpMethod.GET, entity, new ParameterizedTypeReference<WeeklyStatus>(){});
@@ -72,7 +76,7 @@ public class ConsumeWeeklyStatusRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<WeeklyStatusRequest> entity = new HttpEntity<>(weeklyStatusRequest, headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/weekly_statuses/addBy=PROJECT_ID/project/" + String.valueOf(projectId));
+		URI uri = URI.create(weeklyStatusApiUrl + "/addBy=PROJECT_ID/project/" + String.valueOf(projectId));
 
 		ResponseEntity<ApiResponse> response = restTemplate.exchange(uri, HttpMethod.POST, entity, ApiResponse.class);
 		
@@ -89,7 +93,7 @@ public class ConsumeWeeklyStatusRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<WeeklyStatusRequest> entity = new HttpEntity<>(weeklyStatusRequest, headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/weekly_statuses/updateBy=PROJECT_ID/project/" + String.valueOf(projectId)
+		URI uri = URI.create(weeklyStatusApiUrl + "/updateBy=PROJECT_ID/project/" + String.valueOf(projectId)
 							+ "/weekly_status/" + String.valueOf(weeklyStatusId));
 
 		ResponseEntity<ApiResponse> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, ApiResponse.class);
@@ -107,7 +111,7 @@ public class ConsumeWeeklyStatusRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/weekly_statuses/deleteBy=ID/project/" + String.valueOf(projectId)
+		URI uri = URI.create(weeklyStatusApiUrl + "/deleteBy=ID/project/" + String.valueOf(projectId)
 							+ "/weekly_status/" + String.valueOf(weeklyStatusId));
 
 		ResponseEntity<ApiResponse> response = restTemplate.exchange(uri, HttpMethod.DELETE, entity, ApiResponse.class);
@@ -125,7 +129,7 @@ public class ConsumeWeeklyStatusRestApiService {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 		
-		URI uri = URI.create("http://localhost:9292/api/v1/weekly_statuses/deleteAllBy=PROJECT_ID" + String.valueOf(projectId));
+		URI uri = URI.create(weeklyStatusApiUrl + "/deleteAllBy=PROJECT_ID" + String.valueOf(projectId));
 
 		ResponseEntity<ApiResponse> response = restTemplate.exchange(uri, HttpMethod.DELETE, entity, ApiResponse.class);
 		
