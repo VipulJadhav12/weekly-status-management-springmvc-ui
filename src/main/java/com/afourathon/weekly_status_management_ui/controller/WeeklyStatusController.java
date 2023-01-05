@@ -3,15 +3,18 @@ package com.afourathon.weekly_status_management_ui.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.afourathon.weekly_status_management_ui.data.entity.WeeklyStatus;
 import com.afourathon.weekly_status_management_ui.data.payloads.request.WeeklyStatusRequest;
+import com.afourathon.weekly_status_management_ui.data.payloads.response.ApiResponse;
 import com.afourathon.weekly_status_management_ui.service.ConsumeWeeklyStatusRestApiService;
 
 @Controller
@@ -50,8 +53,14 @@ public class WeeklyStatusController {
 	}
 
 	@PostMapping("/addWeeklyStatus")
-	public String addWeeklyStatus(@RequestParam Long projectId, @ModelAttribute WeeklyStatusRequest weeklyStatusRequest) {
-		weeklyStatusService.addWeeklyStatus(projectId, weeklyStatusRequest);
+	public String addWeeklyStatus(@RequestParam Long projectId, @ModelAttribute WeeklyStatusRequest weeklyStatusRequest, 
+			RedirectAttributes redirAttrs) {
+		ApiResponse apiResponse = weeklyStatusService.addWeeklyStatus(projectId, weeklyStatusRequest);
+		
+		if(null == apiResponse || apiResponse.getStatus() != HttpStatus.CREATED)
+			redirAttrs.addFlashAttribute("error", "An error occured while adding new weekly-status!");
+		else
+			redirAttrs.addFlashAttribute("success", "New weekly-status was added successfully!");
 		
 		return "redirect:/displayProject?projectId=" + String.valueOf(projectId);
 	}
@@ -75,8 +84,14 @@ public class WeeklyStatusController {
 	}
 
 	@PostMapping("/updateWeeklyStatus")
-	public String updateWeeklyStatus(@RequestParam Long projectId, @RequestParam Long weeklyStatusId, @ModelAttribute WeeklyStatusRequest weeklyStatusRequest) {
-		weeklyStatusService.updateWeeklyStatus(projectId, weeklyStatusId, weeklyStatusRequest);
+	public String updateWeeklyStatus(@RequestParam Long projectId, @RequestParam Long weeklyStatusId, @ModelAttribute WeeklyStatusRequest weeklyStatusRequest,  
+			RedirectAttributes redirAttrs) {
+		ApiResponse apiResponse = weeklyStatusService.updateWeeklyStatus(projectId, weeklyStatusId, weeklyStatusRequest);
+		
+		if(null == apiResponse || apiResponse.getStatus() != HttpStatus.OK)
+			redirAttrs.addFlashAttribute("error", "An error occured while updating new weekly-status!");
+		else
+			redirAttrs.addFlashAttribute("success", "Weekly-status was updated successfully!");
 		
 		return "redirect:/displayProject?projectId=" + String.valueOf(projectId);
 	}

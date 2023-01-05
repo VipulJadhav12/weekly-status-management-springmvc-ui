@@ -1,103 +1,175 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	
-	<head>
-		<title>Project Details</title>
-		
-		<link rel="stylesheet" 
-			type="text/css" 
-			href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css" />
-		<link rel="stylesheet" 
-			href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" 
-			integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" 
-			crossorigin="anonymous" />
-	</head>
-	
-	<body>
+
+<head>
+<title>Project Details</title>
+
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+	integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+	crossorigin="anonymous" />
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
 		<div class="container">
-			<h3 style="text-align: center;">Project Details</h3>
-			<hr/>
-			<table class="table table-bordered table-striped" id="projectTable">
-			
-				<thead>
-					<tr>
-						<th>Project ID</th>
-						<th>Project Name</th>
-						<th>Start Date</th>
-						<th>End Date</th>
-						<th>Manager Name</th>
-						<th>Manager Email</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td th:text="${project.id}" />
-						<td th:text="${project.name}" />
-						<td th:text="${project.startDate}" />
-						<td th:text="${project.endDate}" />
-						<td th:text="${project.managerName}" />
-						<td th:text="${project.managerEmail}" />
-					</tr>
-				</tbody>
-				
-			</table>
-			<hr/>
-			<h4>Add New Weekly Status</h4>
-			<a th:href="@{/addWeeklyStatusForm(projectId=${project.id})}" class="btn btn-primary">Add Weekly Status</a>
-			<br/><br/>
-			<hr/>
-			<h4 style="text-align: center;">Weekly Statuses List for Project ID: <span th:text="${project.id}"></span></h4>
-			<br/>
-			<table class="table table-bordered table-striped" id="weeklyStatusTable">
-			
-				<thead>
-					<tr>
-						<th>Status ID</th>
-						<th>Status</th>
-						<th>Highlight</th>
-						<th>Risk</th>
-						<th>Weekly End Date</th>
-						<th>Created On</th>
-						<th>Last Modified On</th>
-						<th>Update</th>
-						<th>Delete</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="weeklyStatus: ${project.weeklyStatuses}">
-						<td th:text="${weeklyStatus.id}" />
-						<td th:text="${weeklyStatus.status}" />
-						<td th:text="${weeklyStatus.highlight}" />
-						<td th:text="${weeklyStatus.risk}" />
-						<td th:text="${weeklyStatus.weeklyEndDate}" />
-						<td th:text="${weeklyStatus.createdOn}" />
-						<td th:text="${weeklyStatus.lastModifiedOn}" />
-						<td>
-							<a th:href="@{/updateWeeklyStatusForm(projectId=${project.id}, weeklyStatusId=${weeklyStatus.id})}" class="btn btn-info">Update</a>
-						</td>
-						<td>
-							<a th:href="@{/deleteWeeklyStatus(projectId=${project.id}, weeklyStatusId=${weeklyStatus.id})}" class="btn btn-danger">Delete</a>
-						</td>
-					</tr>
-				</tbody>
-				
-			</table>
-			<hr/>
-			<a th:href="@{/displayAllProjects}">Back to Project list</a>
+			<a class="navbar-brand" href="/">Weekly Status Reporting
+				Application</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item active"><a class="nav-link"
+						th:href="@{/displayAllProjects}">Projects <span
+							class="sr-only">(current)</span>
+					</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">My
+							Account</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
+				</ul>
+			</div>
 		</div>
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
-		<script>
-			$(document).ready(function() {
-				// Script to disable the sorting fn on the DataTable
-				$("#weeklyStatusTable").DataTable({
-					'aoColumnDefs': [{
-    				'bSortable': false,
-    				'aTargets': [-1,-2] /* Disabling sorting fn on the first 2 col, starting from the right */
-				}]
+	</nav>
+
+	<div class="container">
+		<h3 style="text-align: center;">Project Details</h3>
+		<hr />
+		<div class="alert alert-primary" role="alert" th:text="${success}"
+			th:if="${success}"></div>
+		<div class="alert alert-danger" role="alert" th:text="${error}"
+			th:if="${error}"></div>
+		<table class="table table-bordered table-striped" id="projectTable">
+
+			<thead>
+				<tr>
+					<th>Project ID</th>
+					<th>Project Name</th>
+					<th>Start Date</th>
+					<th>End Date</th>
+					<th>Manager Name</th>
+					<th>Manager Email</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:text="${project.id}" />
+					<td th:text="${project.name}" />
+					<td th:text="${project.startDate}" />
+					<td th:text="${project.endDate}" />
+					<td th:text="${project.managerName}" />
+					<td th:text="${project.managerEmail}" />
+				</tr>
+			</tbody>
+
+		</table>
+		<hr />
+		<h4>Add New Weekly Status</h4>
+		<a th:href="@{/addWeeklyStatusForm(projectId=${project.id})}"
+			class="btn btn-primary">Add Weekly Status</a> <br /> <br />
+		<hr />
+		<h4 style="text-align: center;">
+			Weekly Statuses List for Project ID: <span th:text="${project.id}"></span>
+		</h4>
+		<br />
+		<table class="table table-bordered table-striped"
+			id="weeklyStatusTable">
+
+			<thead>
+				<tr>
+					<th>Sr. No.</th>
+					<th>Status</th>
+					<th>Highlight</th>
+					<th>Risk</th>
+					<th>Weekly End Date</th>
+					<th>Created On</th>
+					<th>Last Modified On</th>
+					<th>Update</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					th:each="weeklyStatus, weeklyStatusStat: ${project.weeklyStatuses}"
+					th:style="${weeklyStatusStat.odd}? 'font-weight: bold;'"
+					th:alt-title="${weeklyStatusStat.even}? 'even' : 'odd'">
+					<td th:text="${weeklyStatusStat.index} + 1" />
+					<td th:text="${weeklyStatus.status}" />
+					<td th:text="${weeklyStatus.highlight}" />
+					<td th:text="${weeklyStatus.risk}" />
+					<td th:text="${weeklyStatus.weeklyEndDate}" />
+					<td th:text="${weeklyStatus.createdOn}" />
+					<td th:text="${weeklyStatus.lastModifiedOn}" />
+					<td><a
+						th:href="@{/updateWeeklyStatusForm(projectId=${project.id}, weeklyStatusId=${weeklyStatus.id})}"
+						class="btn btn-info">Update</a></td>
+					<td><a
+						th:href="@{/deleteWeeklyStatus(projectId=${project.id}, weeklyStatusId=${weeklyStatus.id})}"
+						class="btn btn-danger" id="btnDelete">Delete</a></td>
+				</tr>
+			</tbody>
+
+		</table>
+		<hr />
+		<a th:href="@{/displayAllProjects}">Back to Project list</a>
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Delete Weekly-Status</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to delete weekly-status?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+						<a href="" type="button" class="btn btn-primary"
+							id="deleteModalBtnRef">Yes</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Modal end -->
+	</div>
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript"
+		src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			// Script to disable the sorting fn on the DataTable
+			$("#weeklyStatusTable").DataTable({
+				'aoColumnDefs' : [ {
+					'bSortable' : false,
+					'aTargets' : [ -1, -2 ]
+				/* Disabling sorting fn on the first 2 col, starting from the right */
+				} ]
 			});
-			})
-		</script>
-	</body>
-	
+
+			$('.table #btnDelete').on('click', function(e) {
+				e.preventDefault();
+				var href = $(this).attr('href');
+				$('#deleteModal #deleteModalBtnRef').attr('href', href);
+				$('#deleteModal').modal('show');
+			});
+		})
+	</script>
+</body>
+
 </html>
