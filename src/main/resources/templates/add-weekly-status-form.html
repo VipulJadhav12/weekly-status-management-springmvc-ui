@@ -62,12 +62,14 @@
 						placeholder="Select Weekly End Date" required="required" />
 				</div>
 
-				<button type="submit" class="btn btn-primary col-2">Save</button>
+				<input type="button" class="btn btn-secondary col-2" value="Cancel" th:onclick="|window.location.href='/displayProject?projectId=${projectId}'|" />
+				<input type="submit" class="btn btn-success col-2" value="Save" />
 
 			</form>
 			<hr />
-			<a th:href="@{/displayProject(projectId=${projectId})}">Back to
-				Project Details</a>
+			<div align="right">
+				<a th:href="@{/displayProject(projectId=${projectId})}" class="btn btn-primary">Back</a>
+			</div>
 		</div>
 	</div>
 
